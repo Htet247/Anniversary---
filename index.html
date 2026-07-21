@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Baby ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            background: #030108;
+            overflow-x: hidden;
+            color: #fff;
+        }
+
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            display: block;
+        }
+
+        #lock-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #fff0f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+
+        .lock-box {
+            background: white;
+            padding: 40px 25px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(255, 79, 147, 0.2);
+            text-align: center;
+            max-width: 360px;
+            width: 85%;
+            transition: transform 0.3s ease;
+        }
+
+        .lock-box.shake {
+            animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        .lock-box h2 {
+            color: #ff4f93;
+            margin: 0 0 10px 0;
+            font-size: 1.6rem;
+        }
+
+        .lock-box p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0 0 25px 0;
+        }
+
+        .lock-box input {
+            width: 80%;
+            padding: 14px;
+            border: 2px solid #ffb6d5;
+            border-radius: 14px;
+            text-align: center;
+            font-size: 1.2rem;
+            letter-spacing: 4px;
+            outline: none;
+            transition: all 0.3s;
+            color: #000;
+        }
+
+        .lock-box input:focus {
+            border-color: #ff4f93;
+            box-shadow: 0 0 10px rgba(255, 79, 147, 0.2);
+        }
+
+        .lock-box button {
+            margin-top: 20px;
+            padding: 14px 30px;
+            border: none;
+            background: #ff4f93;
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            width: 88%;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 79, 147, 0.3);
+        }
+
+        .lock-box button:hover {
+            background: #e0367a;
+            transform: translateY(-1px);
+        }
+
+        #lock-error {
+            color: #ff4f93;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-top: 15px;
+            display: none;
+        }
+
+        #welcome-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 5000;
+            text-align: center;
+            background: rgba(3, 1, 8, 0.9);
+        }
+
+        .welcome-box {
+            background: #0c0817; 
+            border: 2px solid rgba(255, 79, 147, 0.4);
+            padding: 45px 25px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            max-width: 500px;
+            width: 85%;
+            animation: fadeInMain 0.8s ease-in-out;
+        }
+
+        .welcome-box h1 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255, 79, 147, 0.9);
+        }
+
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            margin: 25px 0;
+            background: #1a0f29;
+            padding: 12px 0;
+            border-radius: 12px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255, 79, 147, 0.3);
+        }
+
+        .marquee-text {
+            display: inline-block;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffdae9;
+            text-shadow: 0 0 8px rgba(255, 79, 147, 0.5);
+            animation: marquee 14s linear infinite;
+        }
+
+        @keyframes marquee {
+            0% { transform: translate3d(100%, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        #main-content {
+            display: none;
+            position: relative;
+            z-index: 1;
+            animation: fadeInMain 1s ease;
+        }
+
+        header {
+            text-align: center;
+            padding: 35px 20px;
+            background: #0c0817; 
+            border-bottom: 2px solid rgba(255, 79, 147, 0.4);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.4rem;
+            text-shadow: 0 0 15px rgba(255, 79, 147, 0.6);
+        }
+
+        header p {
+            margin: 8px 0 0;
+            opacity: 0.85;
+            font-size: 0.95rem;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 20px;
+            background: #070410;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        nav button {
+            padding: 12px 22px;
+            border: 1px solid rgba(255, 79, 147, 0.4);
+            background: #140d24;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.25s ease;
+        }
+
+        nav button:hover, nav button.active-btn {
+            background: #ff4f93;
+            box-shadow: 0 0 15px rgba(255, 79, 147, 0.5);
+            border-color: #ff4f93;
+            transform: translateY(-2px);
+        }
+
+        #countdown-container {
+            margin: 30px auto 15px;
+            max-width: 580px;
+            background: #fdf5d6; 
+            border: 2px solid #f3d456;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(243, 212, 86, 0.25);
+            text-align: center;
+        }
+
+        #countdown-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            color: #b58d14; 
+            font-weight: 700;
+        }
+
+        #countdown {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #5c4505; 
+            text-shadow: 0 1px 2px rgba(255,255,255,0.8);
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 15px 20px 40px;
+        }
+
+        .page {
+            display: none;
+            animation: fadeInPage 0.4s ease-in-out forwards;
+        }
+
+        @keyframes fadeInPage {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInMain {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .page h2 {
+            font-size: 1.6rem;
+            color: #ffffff;
+            text-shadow: 0 2px 8px rgba(255,79,147,0.4);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .page > p {
+            color: #ffdae9;
+            font-size: 1rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .letter {
+            background: #fdf5d6; 
+            border: 2px solid #f3d456;
+            padding: 35px 30px;
+            border-radius: 24px;
+            margin: 20px auto;
+            max-width: 580px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+            line-height: 1.9;
+            text-align: left;
+        }
+
+        .letter h3 {
+            color: #e0367a; 
+            text-align: center;
+            margin-top: 0;
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+        }
+
+        .letter p {
+            color: #443615; 
+            font-size: 0.98rem;
+            margin-bottom: 20px;
+        }
+
+        .letter .closing {
+            text-align: right;
+            font-weight: bold;
+            color: #e0367a;
+            font-size: 1rem;
+            margin-top: 30px;
+        }
+
+        .video-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            max-width: 580px;
+            margin: 0 auto;
+        }
+
+        .video-item {
+            background: #fdf5d6; 
+            border: 2px solid #f3d456;
+            padding: 20px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+
+        .video-item h3 {
+            color: #e0367a;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.15rem;
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; 
+            height: 0;
+            overflow: hidden;
+            border-radius: 14px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            background: #000;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            justify-content: center;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        .gallery-item {
+            background: #140d24;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 1 / 1;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.6);
+            border: 2px solid rgba(255,255,255,0.08);
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.05) translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 79, 147, 0.4);
+            border-color: rgba(255, 79, 147, 0.6);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .img-number {
+            position: absolute;
+            top: 8px;
+            left: 10px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 2;
+            background: rgba(0,0,0,0.5);
+            padding: 2px 6px;
+            border-radius: 8px;
+        }
+
+        #lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(3, 1, 8, 0.96);
+            z-index: 20000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        #lightbox img {
+            max-width: 90%;
+            max-height: 82%;
+            border-radius: 14px;
+            box-shadow: 0 0 30px rgba(255, 79, 147, 0.3);
+            transform: scale(0.92);
+            transition: transform 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        #lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        #lightbox.active img {
+            transform: scale(1);
+        }
+
+        .notes-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            max-width: 520px;
+            margin: 20px auto;
+        }
+
+        .note {
+            color: #1a0b1e;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            font-weight: 600;
+            font-size: 0.98rem;
+            line-height: 1.5;
+            text-align: left;
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .note:hover {
+            transform: scale(1.02) translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 79, 147, 0.3);
+        }
+        
+        .note:nth-child(4n+1) { background: linear-gradient(135deg, #ffb6d5, #ffd3e6); }
+        .note:nth-child(4n+2) { background: linear-gradient(135deg, #ffd3e6, #ffe3ee); }
+        .note:nth-child(4n+3) { background: linear-gradient(135deg, #ffe3ee, #fff0f6); }
+        .note:nth-child(4n+4) { background: linear-gradient(135deg, #fff0f6, #ffdae9); border: 1px solid #ffb6d5; }
+
+        .next-btn {
+            margin-top: 30px;
+            padding: 14px 45px;
+            border: none;
+            background: linear-gradient(45deg, #ff4f93, #ff75a0);
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            font-weight: bold;
+            box-shadow: 0 5px 20px rgba(255, 79, 147, 0.5);
+            transition: all 0.25s ease;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 79, 147, 0.7);
+        }
+
+        .heart-fall {
+            position: fixed;
+            top: -20px;
+            user-select: none;
+            pointer-events: none;
+            z-index: 9999;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(105vh) rotate(360deg); }
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 2rem; }
+            nav button { padding: 10px 16px; font-size: 0.85rem; }
+            .letter { padding: 25px 20px; }
+            .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="blackHoleCanvas"></canvas>
+
+<audio id="bgMusic" src="bg.mp3" loop preload="auto"></audio>
+
+<div id="lock-screen">
+    <div class="lock-box" id="lockBox">
+        <h2>🔒 Secret Access</h2>
+        <p>Please enter our special passcode to enter ❤️</p>
+        <input type="password" id="passcode" placeholder="••••••••" onkeydown="if(event.key === 'Enter') checkPasscode()">
+        <button onclick="checkPasscode()">Unlock ❤️</button>
+        <div id="lock-error">Wrong Passcode! Try Again 💔</div>
+    </div>
+</div>
+
+<div id="welcome-screen" style="display: none;">
+    <div class="welcome-box">
+        <h1>Happy Anniversary! 🎉</h1>
+        
+        <div class="marquee-container">
+            <div class="marquee-text">
+                ✨ Happy Anniversary My Love! ❤️ I Love You So Much ✨ You Are My Everything 💖 Forever With You 💕
+            </div>
+        </div>
+
+        <div id="welcome-countdown" style="font-size: 1.1rem; margin: 15px 0; font-weight: bold; color: #ffb6d5;">Counting time...</div>
+        
+        <button class="next-btn" onclick="goToMainContent()">Next ❤️</button>
+    </div>
+</div>
+
+<div id="main-content">
+    <header>
+        <h1>For My Baby ❤️</h1>
+        <p>A special place made just for you ✨</p>
+    </header>
+
+    <nav>
+        <button id="btn-love" onclick="showPage('love')">❤️ Love Zone</button>
+        <button id="btn-video" onclick="showPage('video')">📹 Video Gallery</button>
+        <button id="btn-gallery" onclick="showPage('gallery')">🖼 Gallery</button>
+        <button id="btn-notes" onclick="showPage('notes')">📝 Notes</button>
+    </nav>
+
+    <div id="countdown-container">
+        <div id="countdown-title">💝 Time elapsed since we started our journey 💝</div>
+        <div id="countdown">Loading Days...</div>
+    </div>
+
+    <div class="container">
+        <section id="love" class="page">
+            <h2>Welcome My Love ❤️</h2>
+            <p>Every moment with you is my favorite memory 🌸. You are my happiness ✨, my peace 🕊️, and my forever ♾️.</p>
+            <div class="letter">
+                <h3>💌 A Letter For You</h3>
+                <p>To the most beautiful person in my life 🥰, I just want to take a moment to tell you how incredibly grateful I am to have you by my side 👩‍❤️‍👨. You have brought so much warmth ☀️, laughter 😂, and genuine happiness 💖 into my world that I can't even begin to imagine a single day without you 🌎.</p>
+                <p>Every little conversation we share 💬, every warm smile 😊, and every sweet memory we build together ✨ has become a precious treasure in my heart 💎. You are my peaceful harbor 🕊️, my safest escape 🔒, and the person who makes even the heaviest days feel light and full of hope 🌟.</p>
+                <p>Thank you for loving me exactly the way I am 🧸, for your unconditional understanding 🤝, and for being the absolute best part of my daily life 🍰. No matter where our journey leads us 🗺️, what challenges come our way 💪, or how much time passes ⏳, my heart will always belong entirely to you 💘.</p>
+                <div class="closing">I love you forever and always 💞🌹</div>
+            </div>
+        </section>
+
+        <!-- ===== VIDEO GALLERY (UPDATED FOR BETTER COMPATIBILITY) ===== -->
+        <section id="video" class="page">
+            <h2>📹 Special Video Gallery</h2>
+            <div class="video-grid">
+                <div class="video-item">
+                    <h3>Song 1: Satranga 🎸</h3>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube-nocookie.com/embed/XP8ip61W3wY?rel=0&enablejsapi=1" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                referrerpolicy="strict-origin-when-cross-origin" 
+                                allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="video-item">
+                    <h3>Song 2: Qaafirana 💕</h3>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube-nocookie.com/embed/3FD-r2m2T58?rel=0&enablejsapi=1" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                referrerpolicy="strict-origin-when-cross-origin" 
+                                allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="video-item">
+                    <h3>Song 3: Nya A Lin ✨</h3>
+                    <div class="video-wrapper">
+                        <iframe src="https://www.youtube-nocookie.com/embed/J6NNVD2c4N4?rel=0&enablejsapi=1" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                referrerpolicy="strict-origin-when-cross-origin" 
+                                allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="gallery" class="page">
+            <h2>Our Memories</h2>
+            <p style="font-size:0.85rem; color:#ffb6d5; margin-top:-15px; margin-bottom:25px;">(Click on the images to view them in full screen 😉)</p>
+            
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <span class="img-number">📷 1</span>
+                    <img src="https://i.ibb.co/C5GHRg2Q/IMG20240421195640.jpg" alt="Memory 1">
+                </div>
+                <div class="gallery-item">
+                    <span class="img-number">📷 2</span>
+                    <img src="https://i.ibb.co/YFzyHhHy/Screenshot-2023-06-24-08-30-45-19-be80aec1db9a2b53c9d399db0c602181.jpg" alt="Memory 2">
+                </div>
+                <div class="gallery-item">
+                    <span class="img-number">📷 3</span>
+                    <img src="https://i.ibb.co/DPZNMccV/IMG-20230220-205142.jpg" alt="Memory 3">
+                </div>
+                <div class="gallery-item">
+                    <span class="img-number">📷 4</span>
+                    <img src="https://i.ibb.co/bM5Kxxck/IMG-20250102-123910.jpg" alt="Memory 4">
+                </div>
+                <div class="gallery-item">
+                    <span class="img-number">📷 5</span>
+                    <img src="https://i.ibb.co/7x97JqhJ/Screenshot-2025-08-09-21-32-42-27-be80aec1db9a2b53c9d399db0c602181.jpg" alt="Memory 5">
+                </div>
+                <div class="gallery-item">
+                    <span class="img-number">📷 6</span>
+                    <img src="https://i.ibb.co/LWdJCbS/IMG-20260601-122841.jpg" alt="Memory 6">
+                </div>
+                <div class="gallery-item">
+                    <span class="img-number">📷 7</span>
+                    <img src="https://i.ibb.co/Y42PQ94K/IMG-20260416-160235.jpg" alt="Memory 7">
+                </div>
+                <div class="gallery-item">
+                    <span class="img-number">📷 8</span>
+                    <img src="https://i.ibb.co/M5fdpCVT/IMG-20260401-101107.jpg" alt="Memory 8">
+                </div>
+                <div class="gallery-item">
+                    <span class="img-number">📷 9</span>
+                    <img src="https://i.ibb.co/KpN9dn74/IMG-20260301-161534.jpg" alt="Memory 9">
+                </div>
+                <div class="gallery-item">
+                    <span class="img-number">📷 10</span>
+                    <img src="https://i.ibb.co/qFxbMVnm/IMG-20260228-132738.jpg" alt="Memory 10">
+                </div>
+                <div class="gallery-item">
+                    <span class="img-number">📷 11</span>
+                    <img src="https://i.ibb.co/xSWHNNNv/IMG-20251123-151826.jpg" alt="Memory 11">
+                </div>
+                <div class="gallery-item">
+                    <span class="img-number">📷 12</span>
+                    <img src="https://i.ibb.co/2XkbF4s/IMG20250325143334.jpg" alt="Memory 12">
+                </div>
+            </div> 
+        </section>
+
+        <section id="notes" class="page">
+            <h2>📝 Sweet Notes For You</h2>
+            <div class="notes-grid">
+                <div class="note">You are my sunshine on a rainy day. ☀️</div>
+                <div class="note">Forever starts and ends with you. ❤️</div>
+                <div class="note">I love you more than words can ever express. 💕</div>
+                <div class="note">My favorite place in the entire world is right next to you. 🌎</div>
+                <div class="note">You make my heart skip a beat every single time you smile. 💞</div>
+                <div class="note">No matter how hard the day is, thinking of you always brings me peace. ✨</div>
+                <div class="note">You are the best thing that has ever happened to me. 💖</div>
+                <div class="note">Holding your hand is my favorite thing to do. 🤝❤️</div>
+                <div class="note">Thank you for being my love, my best friend, and my safe place. 🔒💘</div>
+                <div class="note">My love for you grows stronger with every passing second. 📈💕</div>
+                <div class="note">You are the prettiest chapter in my life story. 📖✨</div>
+                <div class="note">Your voice is my absolute favorite sound in the world. 🎵❤️</div>
+                <div class="note">I want to share all my dreams, laughs, and moments only with you. 🌹</div>
+                <div class="note">You are the sweetest part of my everyday life. 🍓🍰</div>
+                <div class="note">Loving you is as natural as breathing, and I'll never stop. ♾️❤️</div>
+            </div>
+        </section>
+    </div>
+</div>
+
+<div id="lightbox">
+    <img src="" alt="Popup Preview">
+</div>
+
+<script>
+    var animationActive = false;
+
+    function checkPasscode() {
+        var inputCode = document.getElementById("passcode").value;
+        var errorMsg = document.getElementById("lock-error");
+        var lockBox = document.getElementById("lockBox");
+        
+        if (inputCode === "2472022") {
+            document.getElementById("lock-screen").style.display = "none";
+            document.getElementById("welcome-screen").style.display = "flex";
+            
+            var music = document.getElementById("bgMusic");
+            music.play().catch(function(error) {
+                console.log("Audio autoplay initiated.");
+            });
+
+            startTextBlackHole(); 
+            setInterval(createColoredHeart, 260); 
+            startElapsedCounter(); 
+        } else {
+            errorMsg.style.display = "block";
+            lockBox.classList.add("shake");
+            document.getElementById("passcode").value = "";
+            
+            setTimeout(function() {
+                lockBox.classList.remove("shake");
+            }, 400);
+        }
+    }
+
+    function goToMainContent() {
+        document.getElementById("welcome-screen").style.display = "none";
+        document.getElementById("main-content").style.display = "block";
+        showPage('love'); 
+    }
+
+    function showPage(pageId) {
+        var pages = document.querySelectorAll(".page");
+        for (var i = 0; i < pages.length; i++) {
+            pages[i].style.display = "none";
+        }
+        document.getElementById(pageId).style.display = "block";
+        
+        var navButtons = document.querySelectorAll("nav button");
+        navButtons.forEach(function(btn) { btn.classList.remove("active-btn"); });
+        document.getElementById("btn-" + pageId).classList.add("active-btn");
+    }
+
+    var startDate = new Date("July 24, 2022 00:00:00").getTime();
+
+    function startElapsedCounter() {
+        setInterval(function () {
+            var now = new Date().getTime();
+            var distance = now - startDate;
+
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            var counterString = days + " Days 💖 " + hours + " Hours 💖 " + minutes + " Mins 💖 " + seconds + " Secs";
+
+            document.getElementById("welcome-countdown").innerHTML = "Our Love Age: " + counterString;
+            document.getElementById("countdown").innerHTML = counterString;
+        }, 1000);
+    }
+
+    function createColoredHeart() {
+        var heartColors = ["❤️", "💖", "💝", "💕", "💛", "🧡", "💜"];
+        var randomHeart = heartColors[Math.floor(Math.random() * heartColors.length)];
+
+        var heart = document.createElement("div");
+        heart.classList.add("heart-fall");
+        heart.innerHTML = randomHeart;
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.fontSize = (18 + Math.random() * 22) + "px";
+        
+        var duration = (4 + Math.random() * 3);
+        heart.style.animationDuration = duration + "s";
+        document.body.appendChild(heart);
+
+        setTimeout(function() { heart.remove(); }, duration * 1000);
+    }
+
+    function startTextBlackHole() {
+        var canvas = document.getElementById('blackHoleCanvas');
+        var ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        animationActive = true;
+        var particles = [];
+        var particleCount = 170; 
+        
+        var centerX = canvas.width / 2;
+        var centerY = canvas.height / 3.4; 
+
+        var loveTexts = ["I Love You", "My Baby", "Forever", "Miss You", "Care You", "My Safe Place", "Mine", "❤️", "💖", "👩‍❤️‍👨"];
+
+        function createTextParticle() {
+            var pOrbit = Math.random() * (canvas.width / 1.1) + 40;
+            return {
+                angle: Math.random() * Math.PI * 2,
+                orbit: pOrbit,
+                speed: (Math.random() * 0.0018 + 0.0008) * (150 / pOrbit),
+                radialSpeed: Math.random() * 0.04 + 0.02,
+                text: loveTexts[Math.floor(Math.random() * loveTexts.length)],
+                fontSize: Math.floor(Math.random() * 4) + 12, 
+                colorStyle: Math.random()
+            };
+        }
+
+        for (var i = 0; i < particleCount; i++) {
+            particles.push(createTextParticle());
+        }
+
+        function animate() {
+            if (!animationActive) return;
+            
+            ctx.fillStyle = 'rgba(3, 1, 8, 0.18)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            for (var k = 0; k < particles.length; k++) {
+                var p = particles[k];
+                p.angle += p.speed;
+                p.orbit -= p.radialSpeed;
+
+                if (p.orbit <= 40) {
+                    p.angle = Math.PI * 2 * Math.random();
+                    p.orbit = canvas.width / 1.1;
+                }
+
+                var skewFactor = 1.45;
+                var x = centerX + Math.cos(p.angle) * p.orbit * skewFactor;
+                var y = centerY + Math.sin(p.angle) * p.orbit * 0.65;
+
+                if(p.colorStyle < 0.4) {
+                    ctx.fillStyle = "#ff4f93"; 
+                    ctx.shadowColor = "#ff4f93";
+                } else if(p.colorStyle < 0.75) {
+                    ctx.fillStyle = "#ffcc33"; 
+                    ctx.shadowColor = "#ffcc33";
+                } else {
+                    ctx.fillStyle = "#ffffff"; 
+                    ctx.shadowColor = "#ffffff";
+                }
+                ctx.shadowBlur = 4; 
+
+                ctx.font = "bold " + p.fontSize + "px 'Poppins', sans-serif";
+                ctx.fillText(p.text, x, y);
+                ctx.shadowBlur = 0; 
+            }
+
+            var glowGrad = ctx.createRadialGradient(centerX, centerY, 20, centerX, centerY, 140);
+            glowGrad.addColorStop(0, 'rgba(255, 255, 255, 0.65)');
+            glowGrad.addColorStop(0.25, 'rgba(255, 79, 147, 0.28)');
+            glowGrad.addColorStop(0.6, 'rgba(130, 70, 255, 0.08)');
+            glowGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            
+            ctx.fillStyle = glowGrad;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 140, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#010003';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 44, 0, Math.PI * 2);
+            ctx.fill();
+            
+            requestAnimationFrame(animate);
+        }
+        animate();
+
+        window.addEventListener('resize', function() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            centerX = canvas.width / 2;
+            centerY = canvas.height / 3.4;
+        });
+    }
+
+    var lightbox = document.getElementById("lightbox");
+    var lightboxImg = lightbox.querySelector("img");
+    var galleryItems = document.querySelectorAll(".gallery-item img");
+
+    galleryItems.forEach(function(img) {
+        img.addEventListener("click", function() {
+            lightboxImg.src = img.src;
+            lightbox.classList.add("active");
+        });
+    });
+
+    lightbox.addEventListener("click", function() {
+        lightbox.classList.remove("active");
+    });
+
+    var messages = ["I Love You ❤️", "You Are My Everything 💖", "Forever With You 💕"];
+    setInterval(function() {
+        document.title = messages[Math.floor(Math.random() * messages.length)];
+    }, 3000);
+</script>
+</body>
+</html>
